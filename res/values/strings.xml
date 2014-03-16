@@ -4,5 +4,17 @@
     <string name="app_name">EpicBudget</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Test vi är i KTH!</string>
-
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="repeat_password_fail">Your passwords did not match</string>
+    <string-array name="currencies">
+        <item>SEK</item>
+        <item>EUR</item>
+        <item>USD</item>
+    </string-array>
+    
 </resources>
