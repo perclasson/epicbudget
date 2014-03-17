@@ -11,10 +11,20 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="repeat_password">Repeat password</string>
     <string name="repeat_password_fail">Your passwords did not match</string>
+    <string name="failed_login">Wrong password or username</string>
+
     <string-array name="currencies">
         <item>SEK</item>
         <item>EUR</item>
         <item>USD</item>
     </string-array>
-    
+
+    <string name="title_activity_overview">OverviewActivity</string>
+    <string name="select_a_month">Select a month</string>
+    <string name="add">Add</string>
+    <string name="add_overview">Add a new entry</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="expense_radio">Expense</string>
+    <string name="income_radio">Income</string>
+
 </resources>

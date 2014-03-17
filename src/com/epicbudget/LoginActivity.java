@@ -4,11 +4,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 	@Override
@@ -39,8 +43,29 @@ public class LoginActivity extends Activity {
 			} catch (UnsupportedEncodingException e) {
 				return;
 			}
-			APIController api = new APIController(getApplicationContext());
+
+			APIController api = new APIController(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(String result) {
+					if (result.equals("false")) {
+						Toast toast = Toast.makeText(context,
+								R.string.failed_login, Toast.LENGTH_SHORT);
+						toast.show();
+					} else {
+						SharedPreferences settings = context
+								.getSharedPreferences(
+										APIController.PREFS_LOGIN_NAME, 0);
+						Editor editor = settings.edit();
+						editor.putString("auth", result);
+						editor.commit();
+						Intent intent = new Intent(context,
+								OverviewActivity.class);
+						startActivity(intent);
+					}
+				}
+			};
 			api.execute(url);
+
 		}
 	}
 

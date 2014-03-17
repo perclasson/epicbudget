@@ -11,7 +11,8 @@ import android.widget.Toast;
 
 class APIController extends AsyncTask<String, String, String> {
 	public final static String SERVER_URL = "http://wproj.nada.kth.se/~pclasson/epicbudget/api.php?";
-	private Context context;
+	protected static final String PREFS_LOGIN_NAME = "login";
+	protected Context context;
 	
 	public APIController(Context context) {
 		this.context = context;

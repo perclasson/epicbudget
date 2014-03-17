@@ -5,7 +5,7 @@
     android:versionName="0.1" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -27,6 +27,14 @@
         <activity
             android:name="com.epicbudget.RegisterActivity"
             android:label="@string/title_activity_register" >
+        </activity>
+        <activity
+            android:name="com.epicbudget.OverviewActivity"
+            android:label="@string/title_activity_overview" >
+        </activity>
+        <activity
+            android:name="com.epicbudget.AddActivity"
+            android:label="@string/title_activity_add" >
         </activity>
     </application>
 

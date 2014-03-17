@@ -1,5 +1,6 @@
 <?php
-set_error_handler("warning_handler", E_WARNING);
+
+session_start();
 
 function salt_and_hash($password, $salt) {
   return md5($password . $salt);
@@ -45,7 +46,15 @@ function login($conn) {
     "login", 
     Array($username, $salted_password));
 
-  return $result;
+  $row = pg_fetch_row($result);
+
+  if (!$row) {
+    return false;
+  }
+  else {
+    $_SESSION['auth'] = generate_salt();
+    return $_SESSION['auth'];
+  }
 }
 
 function register($conn) {
