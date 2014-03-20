@@ -3,7 +3,6 @@
 
     <string name="app_name">EpicBudget</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Test vi är i KTH!</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -18,13 +17,25 @@
         <item>EUR</item>
         <item>USD</item>
     </string-array>
+    
+    <string-array name="expense_types">
+        <item>Food</item>
+        <item>Clothes</item>
+        <item>Beer</item>
+    </string-array>
+    
+    <string-array name="income_types">
+        <item>Salary</item>
+        <item>Gift</item>
+        <item>Lottery</item>
+    </string-array>
 
     <string name="title_activity_overview">OverviewActivity</string>
     <string name="select_a_month">Select a month</string>
     <string name="add">Add</string>
     <string name="add_overview">Add a new entry</string>
     <string name="title_activity_add">AddActivity</string>
-    <string name="expense_radio">Expense</string>
-    <string name="income_radio">Income</string>
+    <string name="expense_radio_button">Expense</string>
+    <string name="income_radio_button">Income</string>
 
 </resources>

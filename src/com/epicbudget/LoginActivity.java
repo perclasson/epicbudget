@@ -3,11 +3,11 @@ package com.epicbudget;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -19,6 +19,8 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+
+		// TODO: save user name on login
 	}
 
 	@Override
@@ -28,6 +30,21 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// TODO: fix this
+		if (requestCode == Activity.RESULT_OK) {
+			String message = data.getStringExtra("message");
+			if (message != null) {
+				Toast toast = Toast.makeText(getApplicationContext(), message,
+						Toast.LENGTH_SHORT);
+				toast.show();
+			}
+		}
+	}
+
 	public void login(View view) {
 		EditText usernameEditText = (EditText) findViewById(R.id.username_field);
 		EditText passwordEditText = (EditText) findViewById(R.id.password_field);
@@ -35,36 +52,40 @@ public class LoginActivity extends Activity {
 		String password = passwordEditText.getText().toString();
 
 		if (username != null && password != null) {
-			String url = null;
+			JSONObject obj = new JSONObject();
+			
 			try {
-				url = "func=login&username="
-						+ URLEncoder.encode(username, "utf-8") + "&password="
-						+ URLEncoder.encode(password, "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				return;
+				obj.put("username", username);
+				obj.put("password", password);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
 			}
-
+			
 			APIController api = new APIController(getApplicationContext()) {
 				@Override
 				protected void onPostExecute(String result) {
-					if (result.equals("false")) {
-						Toast toast = Toast.makeText(context,
-								R.string.failed_login, Toast.LENGTH_SHORT);
-						toast.show();
-					} else {
-						SharedPreferences settings = context
-								.getSharedPreferences(
-										APIController.PREFS_LOGIN_NAME, 0);
-						Editor editor = settings.edit();
-						editor.putString("auth", result);
-						editor.commit();
-						Intent intent = new Intent(context,
-								OverviewActivity.class);
-						startActivity(intent);
+					try {
+						JSONObject obj = new JSONObject(result);
+						boolean isAuthenticated = obj
+								.getBoolean("is_authenticated");
+
+						if (isAuthenticated) {
+							Intent intent = new Intent(context,
+									OverviewActivity.class);
+							startActivity(intent);
+						} else {
+							String message = obj.getString("message");
+							Toast toast = Toast.makeText(context, message,
+									Toast.LENGTH_SHORT);
+							toast.show();
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
 					}
+
 				}
 			};
-			api.execute(url);
+			api.execute("login/", obj.toString());
 
 		}
 	}

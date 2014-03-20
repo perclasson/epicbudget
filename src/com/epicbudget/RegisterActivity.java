@@ -3,7 +3,11 @@ package com.epicbudget;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,10 +20,10 @@ public class RegisterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		
+
 		Spinner currencies = (Spinner) findViewById(R.id.currency_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.currencies, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.currencies, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		currencies.setAdapter(adapter);
 	}
@@ -33,23 +37,45 @@ public class RegisterActivity extends Activity {
 		String password = passwordEditText.getText().toString();
 		String repeatPassword = repeatPasswordEditText.getText().toString();
 		String currency = currencySpinner.getSelectedItem().toString();
-		
+
 		if (!password.equals(repeatPassword) || password == null) {
-			Toast toast = Toast.makeText(getApplicationContext(), R.string.repeat_password_fail, Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getApplicationContext(),
+					R.string.repeat_password_fail, Toast.LENGTH_SHORT);
 			toast.show();
-		}
-		else if (username != null && password != null) {
-			String url = null;
+		} else if (username != null && password != null) {
+			JSONObject obj = new JSONObject();
 			try {
-				url = "func=register&username="
-						+ URLEncoder.encode(username, "utf-8") + "&password="
-						+ URLEncoder.encode(password, "utf-8") + "&currency="
-								+ URLEncoder.encode(currency, "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				return;
+				obj.put("username", username);
+				obj.put("password", password);
+				obj.put("currency", currency);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
 			}
-			APIController api = new APIController(getApplicationContext());
-			api.execute(url);
+			
+			APIController api = new APIController(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(String result) {
+					try {
+						JSONObject obj = new JSONObject(result);
+						boolean registered = obj.getBoolean("registered");
+						String message = obj.getString("message");
+						if (registered) {
+							Intent returnIntent = new Intent(context, LoginActivity.class);
+							returnIntent.putExtra("message", message);
+							setResult(RESULT_OK, returnIntent);
+							finish();
+						}
+						else {
+							Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+							toast.show();
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			};
+			api.execute("register/", obj.toString());
 		}
 
 	}

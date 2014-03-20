@@ -17,7 +17,7 @@ public class OverviewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
-		Button month = (Button) findViewById(R.id.month_picker);
+		Button month = (Button) findViewById(R.id.date_button);
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM");
 		month.setText(sdf.format(date));
