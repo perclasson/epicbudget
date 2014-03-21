@@ -26,15 +26,28 @@
         </activity>
         <activity
             android:name="com.epicbudget.RegisterActivity"
-            android:label="@string/title_activity_register" >
+            android:label="@string/title_activity_register"
+            android:parentActivityName="com.epicbudget.LoginActivity"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.epicbudget.LoginActivity" />
         </activity>
         <activity
             android:name="com.epicbudget.OverviewActivity"
             android:label="@string/title_activity_overview" >
         </activity>
         <activity
-            android:name="com.epicbudget.AddActivity"
-            android:label="@string/title_activity_add" >
+            android:name="com.epicbudget.AddEntryActivity"
+            android:label="@string/title_activity_add"
+            android:parentActivityName="com.epicbudget.OverviewActivity"
+            android:windowSoftInputMode="stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.epicbudget.OverviewActivity" />
         </activity>
     </application>
 

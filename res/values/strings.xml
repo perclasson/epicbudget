@@ -7,7 +7,8 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_register">Register</string>
     <string name="repeat_password">Repeat password</string>
     <string name="repeat_password_fail">Your passwords did not match</string>
     <string name="failed_login">Wrong password or username</string>
@@ -30,12 +31,16 @@
         <item>Lottery</item>
     </string-array>
 
-    <string name="title_activity_overview">OverviewActivity</string>
+    <string name="title_activity_overview">Overview</string>
     <string name="select_a_month">Select a month</string>
     <string name="add">Add</string>
-    <string name="add_overview">Add a new entry</string>
-    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_add">Add entry</string>
     <string name="expense_radio_button">Expense</string>
     <string name="income_radio_button">Income</string>
+    <string name="action_add_entry">Add a new entry</string>
+    <string name="action_save_entry">Save entry</string>
+    <string name="amount_text">Amount</string>
+    <string name="description_edittext">Description</string>
+    
 
 </resources>

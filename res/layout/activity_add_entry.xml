@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AddEntryActivity" >
+
+    <TextView
+        android:id="@+id/textView1"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entry type" />
+
+    <RadioGroup
+        android:id="@+id/type_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
+
+        <RadioButton
+            android:id="@+id/expense_radio_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:onClick="changeTypeToExpense"
+            android:text="@string/expense_radio_button" />
+
+        <RadioButton
+            android:id="@+id/income_radio_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="changeTypeToIncome"
+            android:text="@string/income_radio_button" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView2"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Interval" />
+
+    <RadioGroup
+        android:id="@+id/interval_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
+
+        <RadioButton
+            android:id="@+id/once_radio_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="Once" />
+
+        <RadioButton
+            android:id="@+id/monthly_radio_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Monthly" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/amount_text"
+        style="@style/Field"
+        android:hint="@string/amount_text"
+        android:inputType="numberDecimal" />
+
+    <Spinner
+        android:id="@+id/type_spinner"
+        style="@style/Field" />
+
+    <Button
+        android:id="@+id/date_text_button"
+        style="@style/DatePicker"
+        android:onClick="showDatePickerDialog" />
+
+    <EditText
+        android:id="@+id/description_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/description_edittext"
+        android:minHeight="48dp" />
+
+</LinearLayout>

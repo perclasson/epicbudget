@@ -28,8 +28,9 @@ def register_view(request):
             "registered": True
         }
     else:
+        field_name, error = form.errors.items()[0]
         data = {
-            "message": form.errors.itervalues().next()[0],
+            "message": field_name.capitalize() + ": " + error[0],
             "registered": False
         }
 
@@ -41,12 +42,12 @@ def add_entry_view(request):
     data = json.loads(request.body)
     response = {}
 
-    if (request.user.is_authenticated()):
+    if request.user.is_authenticated():
         data['user'] = request.user
 
         entry_type = data.get('entry_type', '')
 
-        if (entry_type == 'expense'):
+        if entry_type == 'expense':
             data['expense_type'] = ExpenseType.objects.get(name=data['type']).id
             form = ExpenseForm(data=data)
         else:
@@ -71,10 +72,8 @@ def login_view(request):
     username = data.get('username', '')
     password = data.get('password', '')
 
-    if not password:
+    if not password and not username:
         password = 'martin'
-
-    if not username:
         username = 'martin'
 
     user = authenticate(username=username, password=password)

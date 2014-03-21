@@ -1,11 +1,9 @@
 package com.epicbudget;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ public class LoginActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
@@ -53,14 +50,14 @@ public class LoginActivity extends Activity {
 
 		if (username != null && password != null) {
 			JSONObject obj = new JSONObject();
-			
+
 			try {
 				obj.put("username", username);
 				obj.put("password", password);
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			APIController api = new APIController(getApplicationContext()) {
 				@Override
 				protected void onPostExecute(String result) {
@@ -72,17 +69,16 @@ public class LoginActivity extends Activity {
 						if (isAuthenticated) {
 							Intent intent = new Intent(context,
 									OverviewActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
+							finish();
 						} else {
-							String message = obj.getString("message");
-							Toast toast = Toast.makeText(context, message,
-									Toast.LENGTH_SHORT);
-							toast.show();
+							Toast.makeText(context, obj.getString("message"),
+									Toast.LENGTH_SHORT).show();
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
-
 				}
 			};
 			api.execute("login/", obj.toString());

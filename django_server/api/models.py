@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models import CharField, FloatField, Model, DateField, TextField, IntegerField
+from django.db.models import CharField, FloatField, Model, DateField, TextField
 from django.db.models.fields.related import ForeignKey
 
 CURRENCY_CHOICES = (
@@ -43,6 +43,9 @@ class Entry(Model):
     date = DateField()
     description = TextField(blank=True, null=True)
     interval = CharField(choices=INTERVAL_CHOICES, max_length=255)
+
+    def __str__(self):
+        return str(self.user) + u' ' + str(self.amount)
 
 class Expense(Entry):
     expense_type = ForeignKey(ExpenseType)

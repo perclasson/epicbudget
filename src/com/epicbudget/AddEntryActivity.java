@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,15 +22,18 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class AddActivity extends Activity {
+public class AddEntryActivity extends Activity {
 	Button dateButton;
 	SimpleDateFormat sdf;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add);
-		dateButton = (Button) findViewById(R.id.date_button);
+		setContentView(R.layout.activity_add_entry);
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		dateButton = (Button) findViewById(R.id.date_text_button);
 		Date date = new Date();
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 		dateButton.setText(sdf.format(date));
@@ -37,27 +42,39 @@ public class AddActivity extends Activity {
 		fillSpinner(R.array.expense_types);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.add_entry_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish();
+			return true;
+		case R.id.action_save_entry:
+			saveEntry();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	public void showDatePickerDialog(View view) {
 		// TODO: Date should not be reset when opening the date picker
 		DialogFragment newFragment = new DatePickerFragment() {
 			@Override
 			public void onDateSet(DatePicker view, int year, int month, int day) {
 				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.YEAR, year);
-				cal.set(Calendar.MONTH, month);
-				cal.set(Calendar.DAY_OF_MONTH, day);
+				cal.set(year, month, day);
 				dateButton.setText(sdf.format(cal.getTime()));
 			}
 		};
 		newFragment.show(getFragmentManager(), "datePicker");
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.add, menu);
-		return true;
-	}
 
 	private void errorMessage(String message) {
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT)
@@ -80,7 +97,7 @@ public class AddActivity extends Activity {
 		types.setAdapter(adapter);
 	}
 
-	public void saveEntry(View view) {
+	public void saveEntry() {
 		JSONObject obj = new JSONObject();
 		RadioGroup typeRadioGroup = (RadioGroup) findViewById(R.id.type_radio_group);
 		Integer typeIdRadioButton = typeRadioGroup.getCheckedRadioButtonId();
@@ -95,7 +112,8 @@ public class AddActivity extends Activity {
 		try {
 			amount = Double.parseDouble(amountText.getText().toString());
 		} catch (NumberFormatException e) {
-			errorMessage("Incorrect amount. Please fix! (Bitch)");
+			errorMessage("Incorrect amount.");
+			return;
 		}
 
 		EditText descriptionText = (EditText) findViewById(R.id.description_text);
@@ -104,9 +122,9 @@ public class AddActivity extends Activity {
 		Spinner typeSpinner = (Spinner) findViewById(R.id.type_spinner);
 		String type = typeSpinner.getSelectedItem().toString();
 
-		Button dateButton = (Button) findViewById(R.id.date_button);
+		Button dateButton = (Button) findViewById(R.id.date_text_button);
 		String date = dateButton.getText().toString();
-		
+
 		try {
 			if (typeIdRadioButton == R.id.expense_radio_button) {
 				obj.put("entry_type", "expense");
@@ -128,7 +146,7 @@ public class AddActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		APIController api = new APIController(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {

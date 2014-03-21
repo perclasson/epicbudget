@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -31,9 +28,10 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 class APIController extends AsyncTask<String, String, String> {
-	public final static String SERVER_URL = "http://130.229.166.70/api/";
+	//public final static String SERVER_URL = "http://130.229.166.70/api/";
+	public final static String SERVER_URL = "http://192.168.1.2/api/";
 	protected static final String PREFS_COOKIES = "cookies";
-	private static final String COOKIE_SESSION_ID_NAME = "sessionid";
+	private static final String COOKIE_SESSION_NAME = "sessionid";
 	private static final String COOKIE_SESSION_VALUE = "sessionid_value";
 	private static final String COOKIE_SESSION_DOMAIN = "sessionid_domain";
 	private static final String COOKIE_SESSION_EXPIRY_DATE = "sessionid_expiry_date";
@@ -61,7 +59,7 @@ class APIController extends AsyncTask<String, String, String> {
 
 			if (cookieSessionIdValue != null) {
 				BasicClientCookie cookie = new BasicClientCookie(
-						COOKIE_SESSION_ID_NAME, cookieSessionIdValue);
+						COOKIE_SESSION_NAME, cookieSessionIdValue);
 				cookie.setDomain(settings
 						.getString(COOKIE_SESSION_DOMAIN, null));
 				Date expiryDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyy").parse(settings.getString(
@@ -86,10 +84,8 @@ class APIController extends AsyncTask<String, String, String> {
 			InputStream inputStream = httpResponse.getEntity().getContent();
 
 			for (Cookie cookie : cookieStore.getCookies()) {
-				System.out.println(cookie.getName() + ": " + cookie.getValue());
-				if (cookie.getName().equals(COOKIE_SESSION_ID_NAME)) {
+				if (cookie.getName().equals(COOKIE_SESSION_NAME)) {
 					Editor edit = settings.edit();
-
 					edit.putString(COOKIE_SESSION_VALUE, cookie.getValue());
 					edit.putString(COOKIE_SESSION_DOMAIN, cookie.getDomain());
 					edit.putString(COOKIE_SESSION_EXPIRY_DATE, cookie
@@ -112,14 +108,10 @@ class APIController extends AsyncTask<String, String, String> {
 		}
 
 		return result;
-
 	}
 
 	protected void onPostExecute(String result) {
-		CharSequence text = result;
-
-		Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-		toast.show();
+		Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 	}
 
 }
