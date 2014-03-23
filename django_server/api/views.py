@@ -1,9 +1,10 @@
 import json
+from datetime import datetime
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from api.forms import BudgetUserForm, ExpenseForm, IncomeForm
-from models import CURRENCY_CHOICES, ExpenseType, IncomeType
+from api.forms import BudgetUserForm, EntryForm
+from models import Entry, EntryType, Currency, BudgetUser
 
 
 @csrf_exempt
@@ -12,7 +13,7 @@ def register_view(request):
 
     username = data.get('username', '')
     password = data.get('password', '')
-    currency = data.get('currency', CURRENCY_CHOICES[0][0])
+    currency = data.get('currency', '')
 
     form = BudgetUserForm(data={
         'username': username,
@@ -44,15 +45,10 @@ def add_entry_view(request):
 
     if request.user.is_authenticated():
         data['user'] = request.user
-
-        entry_type = data.get('entry_type', '')
-
-        if entry_type == 'expense':
-            data['expense_type'] = ExpenseType.objects.get(name=data['type']).id
-            form = ExpenseForm(data=data)
-        else:
-            data['income_type'] = IncomeType.objects.get(name=data['type']).id
-            form = IncomeForm(data=data)
+        data['is_active'] = True
+        data['date'] = datetime.fromtimestamp(data['date']/1000.0)
+        data['entry_type'] = EntryType.objects.get(name=data['entry_type']).id
+        form = EntryForm(data=data)
 
         if form.is_valid():
             form.save()
@@ -76,17 +72,74 @@ def login_view(request):
         password = 'martin'
         username = 'martin'
 
+
+    response = {}
+    logout(request)
+
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
             login(request, user)
-            data = {"message": "The user is logged in."}
+            response["message"] = "The user is logged in."
+            response["currency_symbol"] = BudgetUser.objects.get(
+                id=user.id).currency.symbol
+            response["user_id"] = user.id
         else:
-            data = {"message": "The user is not active."}
+            response["message"] = "The user is not active."
     else:
         logout(request)
-        data = {"message": "The username or password is wrong."}
+        response["message"] =  "The username or password is wrong."
 
-    data["is_authenticated"] = request.user.is_authenticated()
+    response["is_authenticated"] = request.user.is_authenticated()
 
-    return HttpResponse(json.dumps(data), content_type='application/json')
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+@csrf_exempt
+def entries_view(request):
+    user = request.user
+    if user.is_authenticated():
+        entries = {
+            "entries": [e.to_dict() for e in Entry.objects.filter(user=user)]
+        }
+        return HttpResponse(
+            json.dumps(entries), content_type='application/json')
+
+@csrf_exempt
+def currencies_view(request):
+    data = json.loads(request.body)
+    last_sync = datetime.fromtimestamp(data['last_sync']/1000.0)
+
+    currencies = {
+        "currencies": [c.to_dict() for c in Currency.objects.filter(
+            last_modified__gt=last_sync)]
+    }
+
+    return HttpResponse(json.dumps(currencies), content_type='application/json')
+
+@csrf_exempt
+def entry_types_view(request):
+    data = json.loads(request.body)
+    last_sync = datetime.fromtimestamp(data['last_sync']/1000.0)
+
+    entry_types = {
+        "entry_types": [e.to_dict() for e in EntryType.objects.filter(
+            last_modified__gt=last_sync)]
+    }
+    return HttpResponse(
+        json.dumps(entry_types), content_type='application/json')
+
+
+@csrf_exempt
+def delete_entry_view(request):
+    data = json.loads(request.body)
+    user = request.user
+    success = False
+
+    if user.is_authenticated():
+        entry = Entry.objects.get(id=data['id'])
+        entry.is_active = False
+        entry.save()
+        success = True
+
+    return HttpResponse(json.dumps(
+        {"success": success}), content_type='application/json')

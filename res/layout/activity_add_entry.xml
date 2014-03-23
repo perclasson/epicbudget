@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,37 +41,6 @@
             android:layout_weight="1"
             android:onClick="changeTypeToIncome"
             android:text="@string/income_radio_button" />
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/textView2"
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Interval" />
-
-    <RadioGroup
-        android:id="@+id/interval_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
-
-        <RadioButton
-            android:id="@+id/once_radio_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Once" />
-
-        <RadioButton
-            android:id="@+id/monthly_radio_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Monthly" />
     </RadioGroup>
 
     <EditText

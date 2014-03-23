@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import BudgetUser, Expense, Income
+from .models import BudgetUser, Entry
 
 
 class BudgetUserForm(ModelForm):
@@ -14,11 +14,6 @@ class BudgetUserForm(ModelForm):
             user.save()
         return user
 
-class ExpenseForm(ModelForm):
+class EntryForm(ModelForm):
     class Meta:
-        model = Expense
-
-class IncomeForm(ModelForm):
-    class Meta:
-        model = Income
-
+        model = Entry

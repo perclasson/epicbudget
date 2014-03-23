@@ -28,8 +28,8 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 class APIController extends AsyncTask<String, String, String> {
-	//public final static String SERVER_URL = "http://130.229.166.70/api/";
-	public final static String SERVER_URL = "http://192.168.1.2/api/";
+	public final static String SERVER_URL = "http://130.229.129.123/api/";
+	// public final static String SERVER_URL = "http://192.168.1.2/api/";
 	protected static final String PREFS_COOKIES = "cookies";
 	private static final String COOKIE_SESSION_NAME = "sessionid";
 	private static final String COOKIE_SESSION_VALUE = "sessionid_value";
@@ -62,8 +62,9 @@ class APIController extends AsyncTask<String, String, String> {
 						COOKIE_SESSION_NAME, cookieSessionIdValue);
 				cookie.setDomain(settings
 						.getString(COOKIE_SESSION_DOMAIN, null));
-				Date expiryDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyy").parse(settings.getString(
-						COOKIE_SESSION_EXPIRY_DATE, null));
+				Date expiryDate = new SimpleDateFormat(
+						"EEE MMM dd HH:mm:ss zzz yyy").parse(settings
+						.getString(COOKIE_SESSION_EXPIRY_DATE, null));
 				cookie.setExpiryDate(expiryDate);
 				cookieStore.addCookie(cookie);
 			}
@@ -73,10 +74,13 @@ class APIController extends AsyncTask<String, String, String> {
 
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(url);
-			StringEntity se = new StringEntity(data);
-			se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,
-					"application/json"));
-			httpPost.setEntity(se);
+
+			if (data != null) {
+				StringEntity se = new StringEntity(data);
+				se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,
+						"application/json"));
+				httpPost.setEntity(se);
+			}
 
 			HttpResponse httpResponse = httpClient.execute(httpPost,
 					localContext);

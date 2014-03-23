@@ -14,17 +14,14 @@
     <string name="failed_login">Wrong password or username</string>
 
     <string-array name="currencies">
-        <item>SEK</item>
-        <item>EUR</item>
-        <item>USD</item>
+        
     </string-array>
-    
+
     <string-array name="expense_types">
         <item>Food</item>
         <item>Clothes</item>
         <item>Beer</item>
     </string-array>
-    
     <string-array name="income_types">
         <item>Salary</item>
         <item>Gift</item>
@@ -41,6 +38,6 @@
     <string name="action_save_entry">Save entry</string>
     <string name="amount_text">Amount</string>
     <string name="description_edittext">Description</string>
-    
+    <string name="select_date">Select date</string>
 
 </resources>

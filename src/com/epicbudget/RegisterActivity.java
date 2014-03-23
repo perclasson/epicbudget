@@ -1,10 +1,17 @@
 package com.epicbudget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.epicbudget.CurrencyContract.Currency;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,17 +25,29 @@ public class RegisterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		
+
 		// Enable up button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		fillCurrencySpinner();
+	}
+
+	private void fillCurrencySpinner() {
+		DbHelper dbHelper = new DbHelper(getApplicationContext());
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		Cursor c = CurrencyContract.getAll(db);
+		List<StringWithTag> list = new ArrayList<StringWithTag>();
+		while (c.moveToNext()) {
+			list.add(new StringWithTag(c.getString(1) + " (" + c.getString(2)
+					+ ")", c.getLong(0)));
+		}
 
 		Spinner currencies = (Spinner) findViewById(R.id.currency_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.currencies, android.R.layout.simple_spinner_item);
+		ArrayAdapter<StringWithTag> adapter = new ArrayAdapter<StringWithTag>(
+				this, android.R.layout.simple_spinner_item, list);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		currencies.setAdapter(adapter);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -38,7 +57,7 @@ public class RegisterActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	public void register(View view) {
 		EditText usernameEditText = (EditText) findViewById(R.id.username_field);
 		EditText passwordEditText = (EditText) findViewById(R.id.password_field);
@@ -47,7 +66,8 @@ public class RegisterActivity extends Activity {
 		String username = usernameEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
 		String repeatPassword = repeatPasswordEditText.getText().toString();
-		String currency = currencySpinner.getSelectedItem().toString();
+		StringWithTag currencyTag = (StringWithTag) currencySpinner.getSelectedItem();
+		Long currency = (Long) currencyTag.tag;
 
 		if (!password.equals(repeatPassword) || password == null) {
 			Toast.makeText(getApplicationContext(),

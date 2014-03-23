@@ -1,14 +1,20 @@
 package com.epicbudget;
 
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +45,25 @@ public class AddEntryActivity extends Activity {
 		dateButton.setText(sdf.format(date));
 
 		// Add spinner objects (expense from beginning)
-		fillSpinner(R.array.expense_types);
+		fillTypeSpinner("expense");
+	}
+
+	private void fillTypeSpinner(String category) {
+		DbHelper dbHelper = new DbHelper(getApplicationContext());
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		Cursor c = EntryTypeContract.getCategory(db, category);
+		List<StringWithTag> list = new ArrayList<StringWithTag>();
+
+		while (c.moveToNext()) {
+			list.add(new StringWithTag(c.getString(1), c.getLong(0)));
+		}
+
+		Spinner entryTypes = (Spinner) findViewById(R.id.type_spinner);
+		ArrayAdapter<StringWithTag> adapter = new ArrayAdapter<StringWithTag>(
+				this, android.R.layout.simple_spinner_item, list);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		entryTypes.setAdapter(adapter);
+		c.close();
 	}
 
 	@Override
@@ -48,7 +72,7 @@ public class AddEntryActivity extends Activity {
 		inflater.inflate(R.menu.add_entry_activity_actions, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -75,36 +99,21 @@ public class AddEntryActivity extends Activity {
 		newFragment.show(getFragmentManager(), "datePicker");
 	}
 
-
 	private void errorMessage(String message) {
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT)
 				.show();
 	}
 
 	public void changeTypeToExpense(View view) {
-		fillSpinner(R.array.expense_types);
+		fillTypeSpinner("expense");
 	}
 
 	public void changeTypeToIncome(View view) {
-		fillSpinner(R.array.income_types);
-	}
-
-	private void fillSpinner(int arrayType) {
-		Spinner types = (Spinner) findViewById(R.id.type_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, arrayType, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		types.setAdapter(adapter);
+		fillTypeSpinner("income");
 	}
 
 	public void saveEntry() {
 		JSONObject obj = new JSONObject();
-		RadioGroup typeRadioGroup = (RadioGroup) findViewById(R.id.type_radio_group);
-		Integer typeIdRadioButton = typeRadioGroup.getCheckedRadioButtonId();
-
-		RadioGroup intervalRadioGroup = (RadioGroup) findViewById(R.id.interval_radio_group);
-		Integer intervalIdRadioButton = intervalRadioGroup
-				.getCheckedRadioButtonId();
 
 		EditText amountText = (EditText) findViewById(R.id.amount_text);
 		Double amount = null;
@@ -117,30 +126,36 @@ public class AddEntryActivity extends Activity {
 		}
 
 		EditText descriptionText = (EditText) findViewById(R.id.description_text);
-		String description = descriptionText.getText().toString();
+		String description = null;
+		try {
+			description = new String(descriptionText.getText().toString()
+					.getBytes("UTF-8"), "ISO-8859-1");
+		} catch (UnsupportedEncodingException e2) {
+			e2.printStackTrace();
+		}
 
 		Spinner typeSpinner = (Spinner) findViewById(R.id.type_spinner);
 		String type = typeSpinner.getSelectedItem().toString();
 
 		Button dateButton = (Button) findViewById(R.id.date_text_button);
-		String date = dateButton.getText().toString();
+		Calendar calendar = Calendar.getInstance();
+
+		Date dateDate = null;
+		try {
+			dateDate = sdf.parse((String) dateButton.getText());
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+
+		calendar.setTime(dateDate);
+		calendar.add(Calendar.HOUR, 10);
+		long date = calendar.getTimeInMillis();
 
 		try {
-			if (typeIdRadioButton == R.id.expense_radio_button) {
-				obj.put("entry_type", "expense");
-			} else if (typeIdRadioButton == R.id.income_radio_button) {
-				obj.put("entry_type", "income");
-			}
-
-			if (intervalIdRadioButton == R.id.once_radio_button) {
-				obj.put("interval", "once");
-			} else if (intervalIdRadioButton == R.id.monthly_radio_button) {
-				obj.put("interval", "monthly");
-			}
-
+			obj.put("interval", "once");
 			obj.put("amount", amount);
 			obj.put("description", description);
-			obj.put("type", type);
+			obj.put("entry_type", type);
 			obj.put("date", date);
 
 		} catch (JSONException e) {
@@ -150,7 +165,22 @@ public class AddEntryActivity extends Activity {
 		APIController api = new APIController(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {
-				System.out.println(result);
+				try {
+					JSONObject obj = new JSONObject(result);
+					boolean isSuccess = obj.getBoolean("success");
+					if (isSuccess) {
+						EditText amountText = (EditText) findViewById(R.id.amount_text);
+						amountText.setText("");
+						EditText descriptionText = (EditText) findViewById(R.id.description_text);
+						descriptionText.setText("");
+						Toast.makeText(getApplicationContext(),
+								obj.getString("message"), Toast.LENGTH_SHORT)
+								.show();
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		};
 
