@@ -31,6 +31,9 @@ class Currency(Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = u'currencies'
+
 
 class BudgetUser(User):
     currency = ForeignKey(Currency)
@@ -85,3 +88,6 @@ class Entry(Model):
         }
     def __str__(self):
         return str(self.user) + u' ' + str(self.amount)
+
+    class Meta:
+        verbose_name_plural = u'entries'

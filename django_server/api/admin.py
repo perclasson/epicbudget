@@ -6,12 +6,9 @@ from .models import BudgetUser, Entry, EntryType, Currency
 class BudgetUserAdmin(ModelAdmin):
     pass
 
-
-# TODO: make delete -> soft delete
 class EntryTypeAdmin(ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
-
 
 class EntryAdmin(ModelAdmin):
     pass

@@ -28,8 +28,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 class APIController extends AsyncTask<String, String, String> {
-	public final static String SERVER_URL = "http://130.229.129.123/api/";
-	// public final static String SERVER_URL = "http://192.168.1.2/api/";
+	public final static String SERVER_URL = "http://130.229.185.43/api/";
 	protected static final String PREFS_COOKIES = "cookies";
 	private static final String COOKIE_SESSION_NAME = "sessionid";
 	private static final String COOKIE_SESSION_VALUE = "sessionid_value";
