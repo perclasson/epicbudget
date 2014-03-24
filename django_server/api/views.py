@@ -3,8 +3,8 @@ from datetime import datetime
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from api.forms import BudgetUserForm, EntryForm
-from models import Entry, EntryType, Currency, BudgetUser
+from api.forms import BudgetUserForm, EntryForm, BudgetForm
+from models import Entry, EntryType, Currency, BudgetUser, Budget
 
 
 @csrf_exempt
@@ -23,7 +23,11 @@ def register_view(request):
     })
 
     if form.is_valid():
-        form.save()
+        budget_user = form.save()
+
+        for entry_type in EntryType.objects.filter(category='expense'):
+            budget = Budget(user=budget_user, amount=0, entry_type=entry_type)
+            budget.save()
         data = {
             "message": "Registration was successful!",
             "registered": True
@@ -41,6 +45,7 @@ def register_view(request):
 @csrf_exempt
 def add_entry_view(request):
     data = json.loads(request.body)
+    print data
     response = {}
 
     if request.user.is_authenticated():
@@ -67,11 +72,6 @@ def login_view(request):
 
     username = data.get('username', '')
     password = data.get('password', '')
-
-    if not password and not username:
-        password = 'martin'
-        username = 'martin'
-
 
     response = {}
     logout(request)
@@ -143,3 +143,32 @@ def delete_entry_view(request):
 
     return HttpResponse(json.dumps(
         {"success": success}), content_type='application/json')
+
+
+@csrf_exempt
+def budgets_view(request):
+    user = request.user
+    response = {}
+
+    if user.is_authenticated():
+        response["budget"] = [
+            b.to_dict() for b in Budget.objects.filter(user=user)]
+
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+@csrf_exempt
+def update_budget_view(request):
+    data = json.loads(request.body)
+    print data
+    user = request.user
+    response = {}
+    response["success"] = False
+    if user.is_authenticated():
+        form = BudgetForm(data=data)
+        if form.is_valid():
+            budget = Budget.objects.get(id=data["id"])
+            budget.amount = form.cleaned_data["amount"]
+            budget.save()
+            response["success"] = True
+
+    return HttpResponse(json.dumps(response), content_type='application/json')

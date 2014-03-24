@@ -162,7 +162,7 @@ public class AddEntryActivity extends Activity {
 			e.printStackTrace();
 		}
 
-		APIController api = new APIController(getApplicationContext()) {
+		API api = new API(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {
 				try {

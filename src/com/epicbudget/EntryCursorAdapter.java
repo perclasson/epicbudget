@@ -120,7 +120,7 @@ public class EntryCursorAdapter extends SimpleCursorAdapter {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				APIController api = new APIController(view.getContext()) {
+				API api = new API(view.getContext()) {
 					@Override
 					protected void onPostExecute(String result) {
 						JSONObject response;

@@ -6,8 +6,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.epicbudget.CurrencyContract.Currency;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -82,7 +80,7 @@ public class RegisterActivity extends Activity {
 				e1.printStackTrace();
 			}
 
-			APIController api = new APIController(getApplicationContext()) {
+			API api = new API(getApplicationContext()) {
 				@Override
 				protected void onPostExecute(String result) {
 					try {

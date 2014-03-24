@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import BudgetUser, Entry
+from .models import BudgetUser, Entry, Budget, EntryType
 
 
 class BudgetUserForm(ModelForm):
@@ -10,6 +10,7 @@ class BudgetUserForm(ModelForm):
     def save(self, commit=True):
         user = super(BudgetUserForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password"])
+
         if commit:
             user.save()
         return user
@@ -17,3 +18,9 @@ class BudgetUserForm(ModelForm):
 class EntryForm(ModelForm):
     class Meta:
         model = Entry
+
+
+class BudgetForm(ModelForm):
+    class Meta:
+        model = Budget
+        fields = ('id', 'amount')

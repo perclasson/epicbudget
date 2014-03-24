@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/budget_row"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center|left"
+    android:gravity="center|left"
+    android:padding="25dp" >
+
+    <TextView
+        android:id="@+id/entry_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center|left"
+        android:paddingRight="20dp"
+        android:text="@+id/entry_type_text" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/amount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center|left"
+        android:text="@+id/amount_text" >
+    </TextView>
+
+</LinearLayout>

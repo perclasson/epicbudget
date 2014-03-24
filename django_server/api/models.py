@@ -60,9 +60,21 @@ class EntryType(Model):
 
 class Budget(Model):
     user = ForeignKey(BudgetUser)
-    expense_type = ForeignKey(EntryType)
+    entry_type = ForeignKey(EntryType)
     amount = FloatField()
     last_modified = DateTimeField(auto_now=True, default=datetime.now())
+    is_active = BooleanField(default=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "entry_type": self.entry_type.id,
+            "amount": self.amount,
+            "is_active": self.is_active,
+        }
+
+    def __str__(self):
+        return str(self.user).capitalize() + u': ' + str(self.amount) + u' in ' + str(self.entry_type.name).lower()
 
 
 class Entry(Model):

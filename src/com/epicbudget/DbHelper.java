@@ -19,12 +19,14 @@ public class DbHelper extends SQLiteOpenHelper {
 		db.execSQL(CurrencyContract.SQL_CREATE_ENTRIES);
 		db.execSQL(EntryTypeContract.SQL_CREATE_ENTRIES);
 		db.execSQL(EntryContract.SQL_CREATE_ENTRIES);
+		db.execSQL(BudgetContract.SQL_CREATE_ENTRIES);
 	}
 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL(CurrencyContract.SQL_DELETE_ENTRIES);
 		db.execSQL(EntryTypeContract.SQL_DELETE_ENTRIES);
 		db.execSQL(EntryContract.SQL_DELETE_ENTRIES);
+		db.execSQL(BudgetContract.SQL_DELETE_ENTRIES);
 		onCreate(db);
 	}
 

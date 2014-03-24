@@ -13,10 +13,7 @@
     <string name="repeat_password_fail">Your passwords did not match</string>
     <string name="failed_login">Wrong password or username</string>
 
-    <string-array name="currencies">
-        
-    </string-array>
-
+    <string-array name="currencies"></string-array>
     <string-array name="expense_types">
         <item>Food</item>
         <item>Clothes</item>
@@ -38,6 +35,9 @@
     <string name="action_save_entry">Save entry</string>
     <string name="amount_text">Amount</string>
     <string name="description_edittext">Description</string>
-    <string name="select_date">Select date</string>
+    <string name="select_date">Date</string>
+    <string name="budget_action_text">Budgets</string>
+    <string name="title_activity_budget">Budgets</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

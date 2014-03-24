@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
 
 	private void getEntryTypes() {
 
-		APIController api = new APIController(getApplicationContext()) {
+		API api = new API(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {
 				try {
@@ -106,7 +106,7 @@ public class LoginActivity extends Activity {
 	}
 
 	private void getCurrencies() {
-		APIController api = new APIController(getApplicationContext()) {
+		API api = new API(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {
 				try {
@@ -187,7 +187,7 @@ public class LoginActivity extends Activity {
 				e1.printStackTrace();
 			}
 
-			APIController api = new APIController(getApplicationContext()) {
+			API api = new API(getApplicationContext()) {
 				@Override
 				protected void onPostExecute(String result) {
 					try {

@@ -49,6 +49,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.epicbudget.OverviewActivity" />
         </activity>
+        <activity
+            android:name="com.epicbudget.BudgetActivity"
+            android:label="@string/title_activity_budget"
+            android:parentActivityName="com.epicbudget.OverviewActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.epicbudget.OverviewActivity" />
+        </activity>
     </application>
 
 </manifest>

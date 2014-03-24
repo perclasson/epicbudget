@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from .models import BudgetUser, Entry, EntryType, Currency
+from .models import BudgetUser, Entry, EntryType, Currency, Budget
 
 
 class BudgetUserAdmin(ModelAdmin):
@@ -16,7 +16,11 @@ class EntryAdmin(ModelAdmin):
 class CurrencyAdmin(ModelAdmin):
     pass
 
+class BudgetAdmin(ModelAdmin):
+    pass
+
 admin.site.register(BudgetUser, BudgetUserAdmin)
 admin.site.register(EntryType, EntryTypeAdmin)
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(Currency, CurrencyAdmin)
+admin.site.register(Budget, BudgetAdmin)

@@ -27,6 +27,7 @@ import com.epicbudget.EntryContract.Entry;
 
 public class OverviewActivity extends Activity {
 	private static final String PREFS_SYNC_ENTRIES = "sync_entries";
+	public static final String TIME_IN_MILLIS = "timeInMillis";
 	private Calendar calendar;
 	private String currencySymbol;
 	private long userId;
@@ -42,13 +43,24 @@ public class OverviewActivity extends Activity {
 		currencySymbol = settings.getString(
 				LoginActivity.PREFS_SYNC_CURRENCY_SYMBOL, "asd");
 		userId = settings.getLong(LoginActivity.PREFS_SYNC_USER_ID, 0);
-		getEntries(Calendar.getInstance());
+		calendar = getFirstDayInMonthCalendar();
+		getEntries();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		getEntries(Calendar.getInstance());
+		getEntries();
+	}
+	
+	private Calendar getFirstDayInMonthCalendar() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal;
 	}
 
 	public void fillListView() {
@@ -71,7 +83,7 @@ public class OverviewActivity extends Activity {
 				+ sdf.format(to.getTime()));
 
 		EntryCursorAdapter adapter = new EntryCursorAdapter(this,
-				R.layout.rowlayout, entryContract.getInterval(db, from, to, userId),
+				R.layout.entry_row_layout, entryContract.getInterval(db, from, to, userId),
 				new String[] { Entry.COLUMN_NAME_AMOUNT },
 				new int[] { R.id.amount_text }, 0, this, currencySymbol);
 
@@ -95,8 +107,8 @@ public class OverviewActivity extends Activity {
 		listview.setAdapter(adapter);
 	}
 
-	private void getEntries(final Calendar cal) {
-		APIController api = new APIController(getApplicationContext()) {
+	private void getEntries() {
+		API api = new API(getApplicationContext()) {
 			@Override
 			protected void onPostExecute(String result) {
 				try {
@@ -147,7 +159,6 @@ public class OverviewActivity extends Activity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				calendar = cal;
 				fillListView();
 				setLastSync(PREFS_SYNC_ENTRIES);
 
@@ -195,18 +206,29 @@ public class OverviewActivity extends Activity {
 		case R.id.action_select_date:
 			showDatePickerDialog();
 			return true;
+		case R.id.action_select_budget:
+			seeBudgets();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void seeBudgets() {
+		Intent intent = new Intent(this, BudgetActivity.class);
+		intent.putExtra(TIME_IN_MILLIS, calendar.getTimeInMillis());
+		
+		startActivity(intent);
 	}
 
 	public void showDatePickerDialog() {
 		DialogFragment newFragment = new DatePickerFragment() {
 			@Override
 			public void onDateSet(DatePicker view, int year, int month, int day) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.set(year, month, day);
-				getEntries(calendar);
+				Calendar c = Calendar.getInstance();
+				c.set(year, month, day);
+				calendar = c;
+				getEntries();
 
 			}
 		};

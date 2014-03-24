@@ -1,6 +1,7 @@
 package com.epicbudget;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -37,6 +38,7 @@ public final class EntryContract {
 	public static abstract class Entry implements BaseColumns {
 		public static final String TABLE_NAME = "entry";
 		public static final String COLUMN_NAME_AMOUNT = "amount";
+		public static final String COLUMN_NAME_AMOUNT_SUM = "amount_sum";
 		public static final String COLUMN_NAME_CATEGORY = "category";
 		public static final String COLUMN_NAME_DATE = "date";
 		public static final String COLUMN_NAME_DESCRIPTION = "description";
@@ -67,8 +69,9 @@ public final class EntryContract {
 
 	public static Cursor get(SQLiteDatabase db, Long id, Long userId) {
 		return db.query(Entry.TABLE_NAME, Entry.PROJECTION, Entry._ID
-				+ " = ? AND " + Entry.COLUMN_NAME_USER_ID + " = ?", new String[] {
-				id.toString(), userId.toString() }, null, null, null);
+				+ " = ? AND " + Entry.COLUMN_NAME_USER_ID + " = ?",
+				new String[] { id.toString(), userId.toString() }, null, null,
+				null);
 	}
 
 	public static Cursor getAll(SQLiteDatabase db, Long userId) {
@@ -88,10 +91,27 @@ public final class EntryContract {
 			Long userId) {
 		Long fromLong = from.getTimeInMillis();
 		Long toLong = to.getTimeInMillis();
-		return db.query(Entry.TABLE_NAME, Entry.PROJECTION,
+		return db.query(
+				Entry.TABLE_NAME,
+				Entry.PROJECTION,
 				Entry.COLUMN_NAME_DATE + " >= ? AND " + Entry.COLUMN_NAME_DATE
 						+ " <= ? AND " + Entry.COLUMN_NAME_USER_ID + " = ?",
-				new String[] { fromLong.toString(), toLong.toString(), userId.toString() }, null,
-				null, Entry.COLUMN_NAME_DATE + " DESC, " + Entry._ID + " DESC");
+				new String[] { fromLong.toString(), toLong.toString(),
+						userId.toString() }, null, null, Entry.COLUMN_NAME_DATE
+						+ " DESC, " + Entry._ID + " DESC");
 	}
+
+	public static Cursor getIntervalInEntryType(SQLiteDatabase db, Long from, Long to,
+			Long userId, Long entryTypeId) {
+		return db.query(
+				Entry.TABLE_NAME,
+				new String[] { "sum(" + Entry.COLUMN_NAME_AMOUNT + ") as " + Entry.COLUMN_NAME_AMOUNT_SUM },
+				Entry.COLUMN_NAME_DATE + " >= ? AND " + Entry.COLUMN_NAME_DATE
+						+ " <= ? AND " + Entry.COLUMN_NAME_USER_ID
+						+ " = ? AND " + Entry.COLUMN_NAME_ENTRY_TYPE + " = ?",
+				new String[] { from.toString(), to.toString(),
+						userId.toString(), entryTypeId.toString() }, Entry.COLUMN_NAME_ENTRY_TYPE,
+				null, null);
+	}
+
 }

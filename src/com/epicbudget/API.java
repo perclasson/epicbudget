@@ -27,7 +27,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-class APIController extends AsyncTask<String, String, String> {
+class API extends AsyncTask<String, String, String> {
 	public final static String SERVER_URL = "http://130.229.185.43/api/";
 	protected static final String PREFS_COOKIES = "cookies";
 	private static final String COOKIE_SESSION_NAME = "sessionid";
@@ -36,7 +36,7 @@ class APIController extends AsyncTask<String, String, String> {
 	private static final String COOKIE_SESSION_EXPIRY_DATE = "sessionid_expiry_date";
 	protected Context context;
 
-	public APIController(Context context) {
+	public API(Context context) {
 		this.context = context;
 	}
 

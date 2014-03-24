@@ -65,6 +65,5 @@ public final class EntryTypeContract {
 	public static boolean delete(SQLiteDatabase db, Long id) {
 		return (db.delete(EntryType.TABLE_NAME, EntryType._ID + " = ?",
 				new String[] { id.toString() }) != 0);
-
 	}
 }
